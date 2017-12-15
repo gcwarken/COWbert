@@ -944,3 +944,111 @@
 	<fstream>
 	<sstream>
 
+1513339172 source:/home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/src/main.cpp
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<map>
+	<stack>
+	<string>
+	<vector>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<algorithm>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	<tiny_obj_loader.h>
+	"utils.h"
+	"matrices.h"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/type_ptr.hpp
+	"../gtc/quaternion.hpp"
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+	"../mat2x2.hpp"
+	"../mat2x3.hpp"
+	"../mat2x4.hpp"
+	"../mat3x2.hpp"
+	"../mat3x3.hpp"
+	"../mat3x4.hpp"
+	"../mat4x2.hpp"
+	"../mat4x3.hpp"
+	"../mat4x4.hpp"
+	<cstring>
+	"type_ptr.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/quaternion.hpp
+	"../mat3x3.hpp"
+	"../mat4x4.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+	"../gtc/constants.hpp"
+	"quaternion.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/constants.hpp
+	"../detail/setup.hpp"
+	"constants.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/constants.inl
+	<limits>
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/quaternion.inl
+	"../trigonometric.hpp"
+	"../geometric.hpp"
+	"../exponential.hpp"
+	<limits>
+	"quaternion_simd.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/trigonometric.hpp
+	"detail/func_trigonometric.hpp"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/detail/func_trigonometric.hpp
+	"setup.hpp"
+	"precision.hpp"
+	"func_trigonometric.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/detail/func_trigonometric.inl
+	"_vectorize.hpp"
+	<cmath>
+	<limits>
+	"func_trigonometric_simd.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/detail/func_trigonometric_simd.inl
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/exponential.hpp
+	"detail/func_exponential.hpp"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/quaternion_simd.inl
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/type_ptr.inl
+	<cstring>
+
+1513336191 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/matrices.h
+	<cstdio>
+	<cstdlib>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	"matrices.h"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/matrix_transform.hpp
+	"../mat4x4.hpp"
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+	"../gtc/constants.hpp"
+	"matrix_transform.inl"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/gtc/matrix_transform.inl
+	"../geometric.hpp"
+	"../trigonometric.hpp"
+	"../matrix.hpp"
+
+1510687372 /home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/include/glm/matrix.hpp
+	"detail/func_matrix.hpp"
+
