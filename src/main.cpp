@@ -5,8 +5,9 @@
 // INF01047 Fundamentos de Computação Gráfica 2017/2
 //               Prof. Eduardo Gastal
 //
-//                   LABORATÓRIO 4
+//              Projeto Final - COWbert
 //
+// Acadêmicos Alfeu Tavares e Gabriel Costa Warken
 
 // Arquivos "headers" padrões de C podem ser incluídos em um
 // programa C++, sendo necessário somente adicionar o caractere
@@ -44,6 +45,7 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 #include "matrices.h"
+#include "level_builder.h"
 
 // Estrutura que representa um modelo geométrico carregado a partir de um
 // arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
