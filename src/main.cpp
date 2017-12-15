@@ -42,6 +42,9 @@
 // Headers da biblioteca para carregar modelos obj
 #include <tiny_obj_loader.h>
 
+// Headers da biblioteca para carregar texturas
+#include <stb_image.h>
+
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 #include "matrices.h"
@@ -189,6 +192,11 @@ GLint model_uniform;
 GLint view_uniform;
 GLint projection_uniform;
 GLint object_id_uniform;
+GLint bbox_min_uniform;
+GLint bbox_max_uniform;
+
+// Número de texturas carregadas pela função LoadTextureImage()
+GLuint g_NumLoadedTextures = 0;
 
 int main(int argc, char* argv[])
 {
