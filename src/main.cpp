@@ -117,6 +117,9 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+// Funções do jogo
+void DrawPyramid(int num_levels);
+
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
 struct SceneObject
@@ -174,9 +177,6 @@ bool g_UsePerspectiveProjection = true;
 
 // Variável que controla se o texto informativo será mostrado na tela.
 bool g_ShowInfoText = true;
-
-// Variáveis do level
-int num_levels = 4;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint vertex_shader_id;
@@ -301,6 +301,8 @@ int main(int argc, char* argv[])
     glm::mat4 the_model;
     glm::mat4 the_view;
 
+    glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
+
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -374,7 +376,6 @@ int main(int argc, char* argv[])
             projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
         }
 
-        glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -388,36 +389,9 @@ int main(int argc, char* argv[])
         #define COW    3
         #define CUBE   4
 
-        // Montar a pirâmide
-        int i, j, k;
-        float cube_side = 2;
-        int center = 0;
-        float lvl_x, lvl_y, lvl_z;
-
-        for ( i=0; i < num_levels; i++ ) {
-
-          lvl_y = (num_levels-i-1) * cube_side;
-
-          int max = cube_side*i;
-
-          for ( j = -max; j <= max; j+=cube_side ) {
-            lvl_x = j;
-            lvl_z = max - abs(j);
-
-            model = Matrix_Translate(lvl_x,lvl_y,lvl_z);
-            glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-            glUniform1i(object_id_uniform, CUBE);
-            DrawVirtualObject("cube");
-
-            if ( abs(j) != max ) {
-              model = Matrix_Translate(lvl_x,lvl_y,-lvl_z);
-              glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-              glUniform1i(object_id_uniform, CUBE);
-              DrawVirtualObject("cube");
-            }
-          }
-        }
-
+        // Monta a pirâmide
+        int num_levels = 5;
+        DrawPyramid(num_levels);
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -878,6 +852,38 @@ GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
 
     // Retornamos o ID gerado acima
     return program_id;
+}
+
+// Desenha a pirâmide do jogo
+void DrawPyramid(int num_levels) {
+  int i, j, k;
+  float cube_side = 2;
+  int center = 0;
+  float lvl_x, lvl_y, lvl_z;
+
+  for ( i=0; i < num_levels; i++ ) {
+
+    lvl_y = (num_levels-i-1) * cube_side;
+
+    int max = cube_side*i;
+
+    for ( j = -max; j <= max; j+=cube_side ) {
+      lvl_x = j;
+      lvl_z = max - abs(j);
+
+      model = Matrix_Translate(lvl_x,lvl_y,lvl_z);
+      glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+      glUniform1i(object_id_uniform, CUBE);
+      DrawVirtualObject("cube");
+
+      if ( abs(j) != max ) {
+        model = Matrix_Translate(lvl_x,lvl_y,-lvl_z);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, CUBE);
+        DrawVirtualObject("cube");
+      }
+    }
+  }
 }
 
 // Definição da função que será chamada sempre que a janela do sistema
