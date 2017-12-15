@@ -176,7 +176,7 @@ bool g_UsePerspectiveProjection = true;
 bool g_ShowInfoText = true;
 
 // Variáveis do level
-int num_levels = 3;
+int num_levels = 4;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint vertex_shader_id;
@@ -390,25 +390,34 @@ int main(int argc, char* argv[])
 
         // Montar a pirâmide
         int i, j, k;
+        float cube_side = 2;
+        int center = 0;
         float lvl_x, lvl_y, lvl_z;
 
         for ( i=0; i < num_levels; i++ ) {
 
-          lvl_y = (num_levels-i-1) * 2;
+          lvl_y = (num_levels-i-1) * cube_side;
 
-          for ( j=0; j < (i==0 ? 1 : i*4); j++ ) {
+          int max = cube_side*i;
 
-            lvl_z = j*2;
+          for ( j = -max; j <= max; j+=cube_side ) {
+            lvl_x = j;
+            lvl_z = max - abs(j);
 
-
-            model = Matrix_Translate(0.0f,lvl_y,lvl_z);
+            model = Matrix_Translate(lvl_x,lvl_y,lvl_z);
             glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
             glUniform1i(object_id_uniform, CUBE);
             DrawVirtualObject("cube");
 
-
+            if ( abs(j) != max ) {
+              model = Matrix_Translate(lvl_x,lvl_y,-lvl_z);
+              glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+              glUniform1i(object_id_uniform, CUBE);
+              DrawVirtualObject("cube");
+            }
           }
         }
+
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1026,7 +1035,7 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
-    g_CameraDistance -= 0.1f*yoffset;
+    g_CameraDistance -= 0.3f*yoffset;
 
     if (g_CameraDistance < 0.0f)
         g_CameraDistance = 0.0f;
