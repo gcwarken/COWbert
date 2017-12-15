@@ -142,6 +142,8 @@ std::map<std::string, SceneObject> g_VirtualScene;
 // Pilha que guardará as matrizes de modelagem.
 std::stack<glm::mat4>  g_MatrixStack;
 
+glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
+
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 float g_ScreenRatio = 1.0f;
 
@@ -301,7 +303,6 @@ int main(int argc, char* argv[])
     glm::mat4 the_model;
     glm::mat4 the_view;
 
-    glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -390,7 +391,7 @@ int main(int argc, char* argv[])
         #define CUBE   4
 
         // Monta a pirâmide
-        int num_levels = 5;
+        int num_levels = 3;
         DrawPyramid(num_levels);
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
