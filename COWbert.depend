@@ -1773,3 +1773,6 @@
 	<glm/gtc/quaternion.hpp>
 	<glm/gtx/dual_quaternion.hpp>
 
+1511568568 source:/home/gabriel/Documents/UFRGS-Trabalhos/2017-2/Fundamentos de computação gráfica/Projeto Final/COWbert/src/stb_image.cpp
+	"stb_image.h"
+
