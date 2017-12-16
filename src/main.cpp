@@ -5,9 +5,8 @@
 // INF01047 Fundamentos de Computação Gráfica 2017/2
 //               Prof. Eduardo Gastal
 //
-//              Projeto Final - COWbert
+//                   LABORATÓRIO 5
 //
-// Acadêmicos Alfeu Tavares e Gabriel Costa Warken
 
 // Arquivos "headers" padrões de C podem ser incluídos em um
 // programa C++, sendo necessário somente adicionar o caractere
@@ -25,6 +24,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <limits>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -42,7 +42,6 @@
 // Headers da biblioteca para carregar modelos obj
 #include <tiny_obj_loader.h>
 
-// Headers da biblioteca para carregar texturas
 #include <stb_image.h>
 
 // Headers locais, definidos na pasta "include/"
@@ -121,9 +120,6 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-// Funções do jogo
-void DrawPyramid(int num_levels);
-
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
 struct SceneObject
@@ -148,8 +144,6 @@ std::map<std::string, SceneObject> g_VirtualScene;
 // Pilha que guardará as matrizes de modelagem.
 std::stack<glm::mat4>  g_MatrixStack;
 
-glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
-
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 float g_ScreenRatio = 1.0f;
 
@@ -168,9 +162,9 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 // usuário através do mouse (veja função CursorPosCallback()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
-float g_CameraTheta = 3.141592f/4; // Ângulo no plano ZX em relação ao eixo Z
-float g_CameraPhi = 3.141592f/4;   // Ângulo em relação ao eixo Y
-float g_CameraDistance = 0.5f; // Distância da câmera para a origem
+float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
+float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
+float g_CameraDistance = 3.5f; // Distância da câmera para a origem
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -222,10 +216,10 @@ int main(int argc, char* argv[])
     // funções modernas de OpenGL.
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Criamos uma janela do sistema operacional, com título "COWbert".
-    int resolution[2] = {1280, 720};
+    // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
+    // de pixels, e com título "INF01047".
     GLFWwindow* window;
-    window = glfwCreateWindow(resolution[0], resolution[1], "COWbert", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "INF01047", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -254,7 +248,7 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, resolution[0], resolution[1]); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
@@ -270,8 +264,9 @@ int main(int argc, char* argv[])
     //
     LoadShadersFromFiles();
 
-    // Carregamos as imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/cube_texture.png");      // TextureImage0
+    // Carregamos duas imagens para serem utilizadas como textura
+    LoadTextureImage("../../data/cube.png");      // TextureImage0
+    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel spheremodel("../../data/sphere.obj");
@@ -287,12 +282,9 @@ int main(int argc, char* argv[])
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
     ObjModel cubemodel("../../data/cube.obj");
-    ComputeNormals(&cubemodel);
-    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+  ComputeNormals(&cubemodel);
+  BuildTrianglesAndAddToVirtualScene(&cubemodel);
 
-    ObjModel cowmodel("../../data/cow.obj");
-    ComputeNormals(&cowmodel);
-    BuildTrianglesAndAddToVirtualScene(&cowmodel);
 
     if ( argc > 1 )
     {
@@ -316,7 +308,6 @@ int main(int argc, char* argv[])
     glm::mat4 the_projection;
     glm::mat4 the_model;
     glm::mat4 the_view;
-
 
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -367,7 +358,7 @@ int main(int argc, char* argv[])
         // estão no sentido negativo! Veja slides 198-200 do documento
         // "Aula_09_Projecoes.pdf".
         float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -100.0f; // Posição do "far plane"
+        float farplane  = -10.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
         {
@@ -391,6 +382,7 @@ int main(int argc, char* argv[])
             projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
         }
 
+        glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -401,12 +393,20 @@ int main(int argc, char* argv[])
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
-        #define COW    3
-        #define CUBE   4
+        #define CUBE   3
 
-        // Monta a pirâmide
-        int num_levels = 3;
-        DrawPyramid(num_levels);
+        // Desenhamos o modelo da esfera
+        model = Matrix_Translate(0.0f,0.0f,0.0f);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, CUBE);
+        DrawVirtualObject("cube");
+
+        // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
+        // passamos por todos os sistemas de coordenadas armazenados nas
+        // matrizes the_model, the_view, e the_projection; e escrevemos na tela
+        // as matrizes e pontos resultantes dessas transformações.
+        //glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
+        //TextRendering_ShowModelViewProjection(window, projection, view, model, p_model);
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -493,7 +493,6 @@ void LoadTextureImage(const char* filename)
     g_NumLoadedTextures += 1;
 }
 
-
 // Função que desenha um objeto armazenado em g_VirtualScene. Veja definição
 // dos objetos na função BuildTrianglesAndAddToVirtualScene().
 void DrawVirtualObject(const char* object_name)
@@ -527,10 +526,6 @@ void DrawVirtualObject(const char* object_name)
     glBindVertexArray(0);
 }
 
-// Função que carrega os shaders de vértices e de fragmentos que serão
-// utilizados para renderização. Veja slide 217 e 219 do documento
-// "Aula_03_Rendering_Pipeline_Grafico.pdf".
-//
 // Função que carrega os shaders de vértices e de fragmentos que serão
 // utilizados para renderização. Veja slide 217 e 219 do documento
 // "Aula_03_Rendering_Pipeline_Grafico.pdf".
@@ -642,16 +637,7 @@ void ComputeNormals(ObjModel* model)
             const glm::vec4  b = vertices[1];
             const glm::vec4  c = vertices[2];
 
-            // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
-            // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
-            float x, y, z;
-            x = (a.x + b.x + c.x) / 3;
-            y = (a.y + b.y + c.y) / 3;
-            z = (a.z + b.z + c.z) / 3;
-            glm::vec4 centro = glm::vec4(x,y,z,0.0f);
-            glm::vec4 vec_a = a-centro;
-            glm::vec4 vec_b = b-centro;
-            const glm::vec4 n = crossproduct(vec_a, vec_b);
+            const glm::vec4  n = crossproduct(b-a,c-a);
 
             for (size_t vertex = 0; vertex < 3; ++vertex)
             {
@@ -809,7 +795,6 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
     glBindVertexArray(0);
 }
 
-
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
 GLuint LoadShader_Vertex(const char* filename)
 {
@@ -957,41 +942,6 @@ GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
 
     // Retornamos o ID gerado acima
     return program_id;
-}
-
-// Desenha a pirâmide do jogo
-void DrawPyramid(int num_levels) {
-  int i, j;
-  float cube_side = 2;
-  float lvl_x, lvl_y, lvl_z;
-
-  for ( i=0; i < num_levels; i++ ) {
-
-    lvl_y = (num_levels-i-1) * cube_side;
-
-    int max = cube_side*i;
-
-    for ( j = -max; j <= max; j+=cube_side ) {
-      lvl_x = j;
-      lvl_z = max - abs(j);
-
-      model = Matrix_Translate(lvl_x,lvl_y,lvl_z);
-      glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-      glUniform1i(object_id_uniform, CUBE);
-      DrawVirtualObject("cube");
-      // glUniform1i(object_id_uniform, COW);
-      // DrawVirtualObject("cow");
-
-      if ( abs(j) != max ) {
-        model = Matrix_Translate(lvl_x,lvl_y,-lvl_z);
-        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(object_id_uniform, CUBE);
-        DrawVirtualObject("cube");
-        // glUniform1i(object_id_uniform, COW);
-        // DrawVirtualObject("cow");
-      }
-    }
-  }
 }
 
 // Definição da função que será chamada sempre que a janela do sistema
@@ -1149,10 +1099,16 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
-    g_CameraDistance -= 0.3f*yoffset;
+    g_CameraDistance -= 0.1f*yoffset;
 
-    if (g_CameraDistance < 0.0f)
-        g_CameraDistance = 0.0f;
+    // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
+    // onde ela está olhando, pois isto gera problemas de divisão por zero na
+    // definição do sistema de coordenadas da câmera. Isto é, a variável abaixo
+    // nunca pode ser zero. Versões anteriores deste código possuíam este bug,
+    // o qual foi detectado pelo aluno Vinicius Fraga (2017/2).
+    const float verysmallnumber = std::numeric_limits<float>::epsilon();
+    if (g_CameraDistance < verysmallnumber)
+        g_CameraDistance = verysmallnumber;
 }
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
