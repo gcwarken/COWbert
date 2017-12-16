@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos as imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/cube_texture.jpeg");      // TextureImage0
+    LoadTextureImage("../../data/cube_texture.png");      // TextureImage0
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel spheremodel("../../data/sphere.obj");
@@ -977,12 +977,16 @@ void DrawPyramid(int num_levels) {
       glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
       glUniform1i(object_id_uniform, CUBE);
       DrawVirtualObject("cube");
+      // glUniform1i(object_id_uniform, COW);
+      // DrawVirtualObject("cow");
 
       if ( abs(j) != max ) {
         model = Matrix_Translate(lvl_x,lvl_y,-lvl_z);
         glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(object_id_uniform, CUBE);
         DrawVirtualObject("cube");
+        // glUniform1i(object_id_uniform, COW);
+        // DrawVirtualObject("cow");
       }
     }
   }

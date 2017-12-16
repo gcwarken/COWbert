@@ -76,6 +76,10 @@ void main()
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
 
+    // Coordenadas de textura U e V
+    float U = 0.0;
+    float V = 0.0;
+
     if ( object_id == SPHERE )
     {
         Kd = vec3(0.8,0.4,0.08);  // refletância difusa
@@ -111,6 +115,11 @@ void main()
       Ka = Kd/2;
       q = 32.0;
     }
+    // else if ( object_id == CUBE )
+    // {
+    //   U = texcoords.x;
+    //   V = texcoords.y;
+    // }
     else // Objeto desconhecido = preto
     {
         Kd = vec3(0.0,0.0,0.0);
@@ -118,6 +127,9 @@ void main()
         Ka = vec3(0.0,0.0,0.0);
         q = 1.0;
     }
+
+    // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
+    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
     // Espectro da fonte de iluminação
     vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
@@ -136,9 +148,12 @@ void main()
     float max_phong = (dot(r,v) < 0.0f) ? 0.0f : dot(r,v);
     vec3 phong_specular_term  = Ks * I * pow(max_phong, q); // PREENCH AQUI o termo especular de Phong
 
-    // Cor final do fragmento calculada com uma combinação dos termos difuso,
-    // especular, e ambiente. Veja slide 134 do documento "Aula_17_e_18_Modelos_de_Iluminacao.pdf".
-    color = lambert_diffuse_term + ambient_term + phong_specular_term;
+    // Cor final do fragmento
+    if ( object_id == CUBE ) {
+      color = Kd0 * (max_lambert * 0.1);
+    } else {
+      color = lambert_diffuse_term + ambient_term + phong_specular_term;
+    }
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
