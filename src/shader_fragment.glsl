@@ -114,12 +114,9 @@ void main()
       Ks = vec3(0.8,0.8,0.8);
       Ka = Kd/2;
       q = 32.0;
+      U = texcoords.x;
+      V = texcoords.y;
     }
-    // else if ( object_id == CUBE )
-    // {
-    //   U = texcoords.x;
-    //   V = texcoords.y;
-    // }
     else // Objeto desconhecido = preto
     {
         Kd = vec3(0.0,0.0,0.0);
