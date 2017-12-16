@@ -120,6 +120,9 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+// Funções do jogo
+void DrawPyramid(int num_levels);
+
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
 struct SceneObject
@@ -146,6 +149,8 @@ std::stack<glm::mat4>  g_MatrixStack;
 
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 float g_ScreenRatio = 1.0f;
+int resolution[2] = {1280, 720};
+glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
 // Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
 float g_AngleX = 0.0f;
@@ -219,7 +224,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047".
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "INF01047", NULL, NULL);
+    window = glfwCreateWindow(resolution[0], resolution[1], "COWbert", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -248,7 +253,7 @@ int main(int argc, char* argv[])
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+    FramebufferSizeCallback(window, resolution[0], resolution[1]); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
@@ -358,7 +363,7 @@ int main(int argc, char* argv[])
         // estão no sentido negativo! Veja slides 198-200 do documento
         // "Aula_09_Projecoes.pdf".
         float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -10.0f; // Posição do "far plane"
+        float farplane  = -100.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
         {
@@ -382,7 +387,6 @@ int main(int argc, char* argv[])
             projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
         }
 
-        glm::mat4 model = Matrix_Identity(); // Transformação identidade de modelagem
 
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -394,6 +398,10 @@ int main(int argc, char* argv[])
         #define BUNNY  1
         #define PLANE  2
         #define CUBE   3
+
+        // monta a pirâmide
+        int num_levels = 3;
+        DrawPyramid(num_levels);
 
         // Desenhamos o modelo da esfera
         model = Matrix_Translate(0.0f,0.0f,0.0f);
@@ -440,6 +448,38 @@ int main(int argc, char* argv[])
     // Fim do programa
     return 0;
 }
+
+// Desenha a pirâmide do jogo
+void DrawPyramid(int num_levels) {
+  int i, j;
+  float cube_side = 2;
+  float lvl_x, lvl_y, lvl_z;
+
+  for ( i=0; i < num_levels; i++ ) {
+
+    lvl_y = (num_levels-i-1) * cube_side;
+
+    int max = cube_side*i;
+
+    for ( j = -max; j <= max; j+=cube_side ) {
+      lvl_x = j;
+      lvl_z = max - abs(j);
+
+      model = Matrix_Translate(lvl_x,lvl_y,lvl_z);
+      glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+      glUniform1i(object_id_uniform, CUBE);
+      DrawVirtualObject("cube");
+
+      if ( abs(j) != max ) {
+        model = Matrix_Translate(lvl_x,lvl_y,-lvl_z);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, CUBE);
+        DrawVirtualObject("cube");
+      }
+    }
+  }
+}
+
 
 // Função que carrega uma imagem para ser utilizada como textura
 void LoadTextureImage(const char* filename)
