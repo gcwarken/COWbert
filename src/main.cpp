@@ -400,7 +400,7 @@ int main(int argc, char* argv[])
         #define CUBE   3
 
         // monta a pirâmide
-        int num_levels = 3;
+        int num_levels = 4;
         DrawPyramid(num_levels);
 
         // Desenhamos o modelo da esfera

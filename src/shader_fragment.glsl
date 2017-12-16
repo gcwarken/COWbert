@@ -60,7 +60,7 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(1.0,1.0,0.0,0.0));
+    vec4 l = normalize(camera_position - p);
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
@@ -71,29 +71,7 @@ void main()
 
     if ( object_id == SPHERE )
     {
-        // PREENCHA AQUI as coordenadas de textura da esfera, computadas com
-        // projeção esférica EM COORDENADAS DO MODELO. Utilize como referência
-        // o slide 139 do documento "Aula_20_e_21_Mapeamento_de_Texturas.pdf".
-        // A esfera que define a projeção deve estar centrada na posição
-        // "bbox_center" definida abaixo.
-
-        // Você deve utilizar:
-        //   função 'length( )' : comprimento Euclidiano de um vetor
-        //   função 'atan( , )' : arcotangente. Veja https://en.wikipedia.org/wiki/Atan2.
-        //   função 'asin( )'   : seno inverso.
-        //   constante M_PI
-        //   variável position_model
-
         vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
-
-        float tex_theta, tex_phi, tex_rho;
-
-        tex_rho = length(vec4(p - position_model));
-        tex_theta = atan(p.x, p.z) * 2;
-        tex_phi   = asin(p.y/tex_rho);
-
-        U = (tex_theta + M_PI) / 2*M_PI;
-        V = (tex_phi + M_PI_2) / M_PI;
     }
     else if ( object_id == BUNNY )
     {
@@ -130,7 +108,7 @@ void main()
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
 
-    color = Kd0 * (lambert + 0.01);
+    color = Kd0 * (lambert + 0.3);
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
